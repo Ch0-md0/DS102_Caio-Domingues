@@ -1,8 +1,6 @@
 from datetime import datetime
 import json
 
-jogadores = []
-
 def lerJSON():
     with open("cadastroVolei.json","r") as meuArquivo:
         return json.load(meuArquivo)
@@ -84,12 +82,12 @@ def ler_pessoa():
 
 def imprimir_jogador(jogador):
     print("\n--- Dados do Jogador ---")
-    print(f"Nome: {jogador['nome']}")
-    print(f"Data de Nascimento: {jogador['dataNascimento']}")
-    print(f"Altura: {jogador['altura']} m")
-    print(f"Sexo: {jogador['sexo']}")
-    print(f"Posição: {jogador['posicao']}")
-    print(f"Nível de Experiência: {jogador['experiencia']}")
+    print(f"Nome: {jogador['Nome']}")
+    print(f"Data de Nascimento: {jogador['DataNascimento']}")
+    print(f"Altura: {jogador['Altura']} m")
+    print(f"Sexo: {jogador['Sexo']}")
+    print(f"Posição: {jogador['Posicao']}")
+    print(f"Nível de Experiência: {jogador['Experiencia']}")
 
 def exibir_jogadores(jogadores):
     if not jogadores:
@@ -100,13 +98,13 @@ def exibir_jogadores(jogadores):
             imprimir_jogador(jogador)
 
 def incluir_jogador(jogadores):
-    if len(jogadores) < 3:
+    if len(jogadores) < 5:
         jogador = ler_pessoa()
         jogadores.append(jogador)
         salvarJSON(jogadores)
         print("Jogador cadastrado com sucesso.")
     else:
-        print("Limite de 3 jogadores atingido.")
+        print("Limite jogadores atingido.")
 
 def editar_jogador(jogadores):
     if not jogadores:
@@ -134,10 +132,10 @@ def remover_jogador(jogadores):
         else:
             print("Número inválido.")
 
-
+jogadores = lerJSON()
+salvarJSON(jogadores)
 
 def menu():
-    jogadores = lerJSON()
     while True:
         print("\n--- Menu ---")
         print("1. Incluir Jogador")
@@ -160,6 +158,7 @@ def menu():
             break
         else:
             print("Opção inválida. Tente novamente.")
+        input()
 
 print("Seja bem-vindo às inscrições para o time de vôlei!")
 menu()
