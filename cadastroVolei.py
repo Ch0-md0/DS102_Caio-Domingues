@@ -4,14 +4,11 @@ import json
 jogadores = []
 
 def lerJSON():
-    try:
-        with open("voleicdt2.json", "r") as meuArquivo:
-            return json.load(meuArquivo)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return []
+    with open("cadastroVolei.json","r") as meuArquivo:
+        return json.load(meuArquivo)
 
 def salvarJSON(lista):
-    with open("voleicdt2.json", "w") as meuArquivo:
+    with open("cadastroVolei.json", "w") as meuArquivo:
         json.dump(lista, meuArquivo, indent=4)
 
 def ler_valor_nao_vazio(nome_variavel):
@@ -77,12 +74,12 @@ def ler_pessoa():
     experiencia = ler_experiencia('experiência')
 
     return {
-        'nome': nome,
-        'dataNascimento': dataNascimentoString,
-        'altura': altura,
-        'sexo': sexo,
-        'posição': posicao,
-        'experiencia': experiencia
+        'Nome': nome,
+        'DataNascimento': dataNascimentoString,
+        'Altura': altura,
+        'Sexo': sexo,
+        'Posicao': posicao,
+        'Experiencia': experiencia
     }
 
 def imprimir_jogador(jogador):
@@ -91,10 +88,10 @@ def imprimir_jogador(jogador):
     print(f"Data de Nascimento: {jogador['dataNascimento']}")
     print(f"Altura: {jogador['altura']} m")
     print(f"Sexo: {jogador['sexo']}")
-    print(f"Posição: {jogador['posição']}")
+    print(f"Posição: {jogador['posicao']}")
     print(f"Nível de Experiência: {jogador['experiencia']}")
 
-def exibir_jogadores():
+def exibir_jogadores(jogadores):
     if not jogadores:
         print("Nenhum jogador cadastrado.")
     else:
@@ -102,7 +99,7 @@ def exibir_jogadores():
             print(f"\nJogador {i + 1}")
             imprimir_jogador(jogador)
 
-def incluir_jogador():
+def incluir_jogador(jogadores):
     if len(jogadores) < 3:
         jogador = ler_pessoa()
         jogadores.append(jogador)
@@ -111,11 +108,11 @@ def incluir_jogador():
     else:
         print("Limite de 3 jogadores atingido.")
 
-def editar_jogador():
+def editar_jogador(jogadores):
     if not jogadores:
         print("Nenhum jogador para editar.")
     else:
-        exibir_jogadores()
+        exibir_jogadores(jogadores)
         indice = int(input("Informe o número do jogador a editar: ")) - 1
         if 0 <= indice < len(jogadores):
             jogadores[indice] = ler_pessoa()
@@ -124,11 +121,11 @@ def editar_jogador():
         else:
             print("Número inválido.")
 
-def remover_jogador():
+def remover_jogador(jogadores):
     if not jogadores:
         print("Nenhum jogador para remover.")
     else:
-        exibir_jogadores()
+        exibir_jogadores(jogadores)
         indice = int(input("Informe o número do jogador a remover: ")) - 1
         if 0 <= indice < len(jogadores):
             jogadores.pop(indice)
@@ -137,8 +134,9 @@ def remover_jogador():
         else:
             print("Número inválido.")
 
+
+
 def menu():
-    global jogadores
     jogadores = lerJSON()
     while True:
         print("\n--- Menu ---")
@@ -150,13 +148,13 @@ def menu():
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
-            incluir_jogador()
+            incluir_jogador(jogadores)
         elif opcao == "2":
-            exibir_jogadores()
+            exibir_jogadores(jogadores)
         elif opcao == "3":
-            editar_jogador()
+            editar_jogador(jogadores)
         elif opcao == "4":
-            remover_jogador()
+            remover_jogador(jogadores)
         elif opcao == "5":
             print("Saindo...")
             break
