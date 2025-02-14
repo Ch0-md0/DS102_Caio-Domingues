@@ -4,64 +4,64 @@ import json
 jogadores = []
 
 def lerJSON():
-    with open("voleicdt2.json", "r") as meuArquivo:
-        voleicdt2 = json.load(meuArquivo)
-        return voleicdt2
-    
+    try:
+        with open("voleicdt2.json", "r") as meuArquivo:
+            return json.load(meuArquivo)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
 def salvarJSON(lista):
     with open("voleicdt2.json", "w") as meuArquivo:
-        meuArquivo.write(lista)
+        json.dump(lista, meuArquivo, indent=4)
 
 def ler_valor_nao_vazio(nome_variavel):
-    valor_lido = input(f'Dê algum valor para {nome_variavel}: ')
-    while valor_lido == '':
-        print(f'Invalido! o valor para {nome_variavel} não pode ser vazio.')
-        valor_lido = input(f'Dê algum valor para {nome_variavel}: ')
+    valor_lido = input(f'Dê algum valor para {nome_variavel}: ').strip()
+    while not valor_lido:
+        print(f'Inválido! O valor para {nome_variavel} não pode ser vazio.')
+        valor_lido = input(f'Dê algum valor para {nome_variavel}: ').strip()
     return valor_lido
 
-def ler_altura(valor_altura):
+def ler_altura(nome_variavel):
     while True:
         try:
-            valor_lido = int(float(input(f'Defina a {valor_altura} em metros: ')))
+            valor_lido = float(input(f'Defina a {nome_variavel} (em metros): '))
             if 1.40 <= valor_lido <= 2.20:
                 return valor_lido
             else:
-                print(f'Inválido! O valor para {valor_altura} deve estar entre 1.40 e 2.20 metros.')
+                print(f'Inválido! O valor deve estar entre 1.40 e 2.20 metros.')
         except ValueError:
-            print(f'Inválido! Digite um número válido para {valor_altura}.')
+            print('Inválido! Digite um número válido.')
 
-def ler_sexo(valor_sexo):
-    valor_lido = input(f'Defina o {valor_sexo} como masculino ou feminino:').strip().lower()
-    while valor_lido not in ['masculino', 'feminino']:
-        print(f'invalido! o valor para {valor_sexo} não pode ser este.')
-        valor_lido = input(f'defina o {valor_sexo} como masculino ou feminino:').strip().lower()
-    return valor_lido
-        
-def ler_posição(valor_posição):
+def ler_sexo(nome_variavel):
+    while True:
+        valor_lido = input(f'Defina o {nome_variavel} (masculino/feminino): ').strip().lower()
+        if valor_lido in ['masculino', 'feminino']:
+            return valor_lido
+        print('Inválido! Escolha entre masculino ou feminino.')
+
+def ler_posicao(nome_variavel):
     opcoes = ['libero', 'levantador', 'ponteiro', 'central', 'oposto']
-    print(f'Opções disponiveis:')
-    print(opcoes)
-    valor_lido = input(f'Defina sua {valor_posição}: ').strip().lower()
-    while valor_lido not in opcoes: 
-        print(f'invalido! o valor para {valor_posição} não pode ser este.')
-        valor_lido = input(f'Defina sua {valor_posição}: ').strip().lower()
-    return valor_lido
-        
-def ler_experiencia(valor_exp):
+    print(f'Opções disponíveis: {", ".join(opcoes)}')
+    while True:
+        valor_lido = input(f'Defina sua {nome_variavel}: ').strip().lower()
+        if valor_lido in opcoes:
+            return valor_lido
+        print('Inválido! Escolha uma posição válida.')
+
+def ler_experiencia(nome_variavel):
     opcoes = ['pouca', 'mediana', 'alta']
-    print(f'Opções disponiveis:')
-    print(opcoes)
-    valor_lido = input(f'Defina sua {valor_exp}: ')
-    while valor_lido not in opcoes:
-        print(f'Invalido! o valor para {valor_exp} não pode ser este.')
-        valor_lido = input(f'Defina sua {valor_exp}: ')
-    return valor_lido
+    print(f'Opções disponíveis: {", ".join(opcoes)}')
+    while True:
+        valor_lido = input(f'Defina sua {nome_variavel}: ').strip().lower()
+        if valor_lido in opcoes:
+            return valor_lido
+        print('Inválido! Escolha uma experiência válida.')
 
 def ler_pessoa():
     print("\n--- Cadastro do Jogador ---")
     nome = ler_valor_nao_vazio('nome')
     while True:
-        dataNascimentoString = input('Digite sua data de nascimento(dd/mm/aaaa): ')
+        dataNascimentoString = input('Digite sua data de nascimento (dd/mm/aaaa): ')
         try:
             dataNascimento = datetime.strptime(dataNascimentoString, "%d/%m/%Y")
             if dataNascimento > datetime.now():
@@ -71,66 +71,55 @@ def ler_pessoa():
         except ValueError:
             print('Data inválida. Use o formato (dd/mm/aaaa).')
 
-    
-    try:
-        dataNascimento = datetime.strptime(dataNascimentoString, "%d/%m/%Y")
-    except ValueError:
-        print('Data inválida. Use o formato dd/mm/aaaa')
-        return ler_pessoa()
-    altura = ler_valor_nao_vazio('altura')
+    altura = ler_altura('altura')
     sexo = ler_sexo('sexo')
-    posição = ler_posição('posição')
-    experiencia = ler_experiencia('experiencia')
+    posicao = ler_posicao('posição')
+    experiencia = ler_experiencia('experiência')
 
-    jogador = {
+    return {
         'nome': nome,
-        'dataNascimento': dataNascimento,
+        'dataNascimento': dataNascimentoString,
         'altura': altura,
         'sexo': sexo,
-        'posição': posição,
-        'experiencia': experiencia,
-    
+        'posição': posicao,
+        'experiencia': experiencia
     }
-    return jogadores + jogador
 
 def imprimir_jogador(jogador):
     print("\n--- Dados do Jogador ---")
-    print(f"Nome:\t\t{jogador['nome']}")
-    print(f"Data:\t\t{jogador['dataNascimento'].strftime('%d/%m/%Y')}")
-    print(f"Sexo:\t\t{jogador['sexo']}")
-    print(f"Altura:\t\t{jogador['altura']}")
-    print(f"Posição:\t{jogador['posição']}")
-    print(f"Nivel de Exp.:\t{jogador['experiencia']}")
-
-def exibir_jogadores():
-    for i, jogador in enumerate(jogadores):
-        print(f"\n Jogador {i+1}")
-        imprimir_jogador(jogador)
+    print(f"Nome: {jogador['nome']}")
+    print(f"Data de Nascimento: {jogador['dataNascimento']}")
+    print(f"Altura: {jogador['altura']} m")
+    print(f"Sexo: {jogador['sexo']}")
+    print(f"Posição: {jogador['posição']}")
+    print(f"Nível de Experiência: {jogador['experiencia']}")
 
 def exibir_jogadores():
     if not jogadores:
         print("Nenhum jogador cadastrado.")
     else:
         for i, jogador in enumerate(jogadores):
-            print(f"\nJogador {i+1}")
+            print(f"\nJogador {i + 1}")
             imprimir_jogador(jogador)
 
 def incluir_jogador():
     if len(jogadores) < 3:
         jogador = ler_pessoa()
         jogadores.append(jogador)
+        salvarJSON(jogadores)
         print("Jogador cadastrado com sucesso.")
     else:
         print("Limite de 3 jogadores atingido.")
 
 def editar_jogador():
     if not jogadores:
-                print("Nenhum jogador para editar.")
+        print("Nenhum jogador para editar.")
     else:
         exibir_jogadores()
         indice = int(input("Informe o número do jogador a editar: ")) - 1
         if 0 <= indice < len(jogadores):
             jogadores[indice] = ler_pessoa()
+            salvarJSON(jogadores)
             print("Jogador atualizado com sucesso.")
         else:
             print("Número inválido.")
@@ -140,19 +129,18 @@ def remover_jogador():
         print("Nenhum jogador para remover.")
     else:
         exibir_jogadores()
-        indice = int(input("Informe o número do jogador a editar: ")) - 1
+        indice = int(input("Informe o número do jogador a remover: ")) - 1
         if 0 <= indice < len(jogadores):
             jogadores.pop(indice)
-            print("Jogador removio com sucesso.")
+            salvarJSON(jogadores)
+            print("Jogador removido com sucesso.")
         else:
             print("Número inválido.")
-            
 
-salvarJSON(json.dumps(jogadores, indent=4))
-jogadores = lerJSON()
 def menu():
+    global jogadores
+    jogadores = lerJSON()
     while True:
-        salvarJSON(json.dumps(jogadores, indent=4))
         print("\n--- Menu ---")
         print("1. Incluir Jogador")
         print("2. Exibir Jogadores")
@@ -177,3 +165,4 @@ def menu():
 
 print("Seja bem-vindo às inscrições para o time de vôlei!")
 menu()
+
